@@ -1,7 +1,7 @@
 # Automated_Stand
 The data analasys for automated SPD measurements. 
 SPD is single photon detector. In our realization, this SPD based on SPAD (single photon avalanche photodiode), i.e. on semiconductor sensing element. 
-The SPD is useful for QKD (quantum key distribution -- mainly) applications, biomarkers tomography, LIDAR and OTDR systems, deep space exploration etc. 
+The SPD is useful for [QKD](https://en.wikipedia.org/wiki/Quantum_key_distribution) (quantum key distribution -- mainly) applications, biomarkers tomography, LIDAR and OTDR systems, deep space exploration etc. 
 You can read our articles to better understand the meaning of this device and how it works:
 https://arxiv.org/abs/2104.07952
 https://arxiv.org/abs/2104.03919
