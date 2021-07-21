@@ -14,7 +14,7 @@ https://link.springer.com/article/10.1134/S1063739721010078
 
 ## Navigation
 You can run GUI5.py or start_SPD.bat to open the app with 3-D and 2-D representation of measured SPD parameters.
-Raw data for different SPD models placed at the !SPDStandResults folder. All our SPD have beautiful names. Inside one of it's name-folder you can see date of the measurement. If u go deeper, you will see raw data and report folder, that contains the postprocessed data in picture and dashbord representation. 
+Raw data for different SPD models placed at the !SPDStandResults folder. All our SPD have beautiful names (i.e. Hariton or Timofei). Inside one of it's name-folder you can see date of the measurement. If u go deeper, you will see raw data and report folder, that contains the postprocessed data in picture and dashbord representation. 
 
 ## Updates
 Repository updates while adding a new SPD measurements or while adding a new features of the code. So, it's really actual repository.
