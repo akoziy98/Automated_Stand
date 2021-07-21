@@ -1,0 +1,26 @@
+[21.06.08_19:41]
+error code: -42
+SPD.HV_Grid Check HV_bias Limits.vi<ERR>
+HV_bias less then HV_bias_Start
+
+
+<b>Complete call chain:</b>
+     SPD.HV_Grid Check HV_bias Limits.vi
+     SPD.HV_Grid Min Search.vi
+     SPD.HV_bias Range.vi
+     SPD.HV_Bias Grid Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
+[21.06.08_19:41]
+error code: -42
+SPD.HV_Grid Check HV_bias Limits.vi<ERR>
+HV_bias less then HV_bias_Start
+
+
+<b>Complete call chain:</b>
+     SPD.HV_Grid Check HV_bias Limits.vi
+     SPD.HV_Grid Min Search.vi
+     SPD.HV_bias Range.vi
+     SPD.HV_Bias Grid Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
