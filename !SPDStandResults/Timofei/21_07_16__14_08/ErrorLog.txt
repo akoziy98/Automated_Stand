@@ -1,0 +1,54 @@
+[21.07.16_19:25:13]
+error code: -1073807339
+Timeout expired before operation completed.
+[21.07.17_08:30:53]
+error code: -44
+SPD.Wait For SPD Ready.vi<ERR>
+Timeout acquired while Waiting SPD Ready.
+
+
+<b>Complete call chain:</b>
+     SPD.Wait For SPD Ready.vi
+     SPD.Set HV_Bias and Wait For Ready.vi
+     SPD.HV_bias Range.vi
+     SPD.HV_Bias Grid Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
+[21.07.17_11:48:27]
+error code: -1074000000
+Agilent 532XX Series.lvlib:Error Query.vi<ERR>
+Instrument reports:
+-410,"Query INTERRUPTED"
++0,"No error"
+
+
+
+<b>Complete call chain:</b>
+     Agilent 532XX Series.lvlib:Error Query.vi
+     Agilent 532XX Series.lvlib:Read Measurement (Single).vi
+     FreqC.Read Measurement.vi
+     SPD.Read Count Rate.vi
+     SPD.QE Tune Phese and Get Count Rate.vi
+     SPD.QE&TR Meas Const T.vi
+     SPD.QE&TR Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
+[21.07.17_11:48:27]
+error code: -1074000000
+Agilent 532XX Series.lvlib:Error Query.vi<ERR>
+Instrument reports:
+-410,"Query INTERRUPTED"
++0,"No error"
+
+
+
+<b>Complete call chain:</b>
+     Agilent 532XX Series.lvlib:Error Query.vi
+     Agilent 532XX Series.lvlib:Read Measurement (Single).vi
+     FreqC.Read Measurement.vi
+     SPD.Read Count Rate.vi
+     SPD.QE Tune Phese and Get Count Rate.vi
+     SPD.QE&TR Meas Const T.vi
+     SPD.QE&TR Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi

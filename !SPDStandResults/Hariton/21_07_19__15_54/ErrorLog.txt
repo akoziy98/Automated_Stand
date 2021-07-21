@@ -1,0 +1,19 @@
+[21.07.19_19:54:10]
+error code: -44
+SPD.Wait For SPD Ready.vi<ERR>
+Timeout acquired while Waiting SPD Ready.
+
+
+<b>Complete call chain:</b>
+     SPD.Wait For SPD Ready.vi
+     SPD.Set HV_Bias and Wait For Ready.vi
+     SPD.HV_bias Range.vi
+     SPD.HV_Bias Grid Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
+[21.07.19_23:25:58]
+error code: 56
+TCP Read in KeySight 8164B LAN InstrLib.lvlib:8164B ReadOneLineResponse.vi->KeySight 8164B LAN InstrLib.lvlib:8164B Read Power.vi->SPD.Set Laser Power.vi->SPD.HV_bias Range.vi->SPD.HV_Bias Grid Meas.vi->SPD.Measurments.vi->SPD Test Launcher.vi
+[21.07.19_23:25:58]
+error code: 56
+TCP Read in KeySight 8164B LAN InstrLib.lvlib:8164B ReadOneLineResponse.vi->KeySight 8164B LAN InstrLib.lvlib:8164B Read Power.vi->SPD.Set Laser Power.vi->SPD.HV_bias Range.vi->SPD.HV_Bias Grid Meas.vi->SPD.Measurments.vi->SPD Test Launcher.vi
