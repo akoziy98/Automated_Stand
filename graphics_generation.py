@@ -53,17 +53,24 @@ class graphics_generation(object):
         self.SPD = spd_analyze.SPD(self.dir_name)
         self.temp_list = self.SPD.temp_list
         #Interesting way to determine the qe_sat_list set
-        #qe_max = np.max(self.SPD.qe)
+        qe_max = 0
+        for i in range(len(self.SPD.qe)):
+            if np.max(self.SPD.qe[i]) > qe_max:
+                qe_max = np.max(self.SPD.qe[i])
 
         #Settings for common detectors
         #self.qe_sat_list = [10, 15, 20, 25]
         #Settings for gun detector
-        self.qe_sat_list = [20, 25, 30, 35]
+        #self.qe_sat_list = [20, 25, 30, 35]
 
-        #if qe_max > 25:
-        #    self.qe_sat_list = [10, 15, 20, 25]
-        #else:
+        print('qe_max = ', qe_max)
+        if 18 <= qe_max < 50:
+            self.qe_sat_list = [10, 15, 20, 25]
+        elif 10 <= qe_max < 18:
         #    self.qe_sat_list = [round((i + 1) * qe_max / 4, 1) for i in range(4)]
+            self.qe_sat_list = [5, 7, 10, 15]
+        elif qe_max > 50 :
+            self.qe_sat_list = [20, 25, 30, 35]
 
         self.colors = ['b', 'g', 'r', 'magenta', 'k', 'cyan']
         self.params['optimal_params'] = {'head': ['Criterion', 'PDE, %', 'DCR, Hz', 'SNR', 'AP, %', 'DT, mus', 'TR, ps']}

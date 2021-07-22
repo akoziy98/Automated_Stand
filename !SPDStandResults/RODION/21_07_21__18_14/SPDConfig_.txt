@@ -1,0 +1,77 @@
+[Test00_NoPulses]
+HV_Bias = 40
+FreqC_GateTime = 1
+
+[Test01_HV_bias]
+FS = 100
+TS = 2
+HV_Bias_Quick_Start = 50
+HV_Bias_Quick_Stop = 80
+HV_Bias_Quick_Step = 0,5
+FreqC_Quick_GateTime = 0,5
+HV_Bias_Precise_Step = 0,05
+FreqC_Precise_GateTime = 0,5
+PulsesCount_max = 300
+PulsesCount_min = 200
+
+[Test02_Strobe_Phase]
+FS = 100
+TS = 2
+Laser_WaveLength = 1550
+P_units = 1
+P_set = 3,6E-9
+Att = 50
+Phase_Quick_Start = 0
+Phase_Quick_Stop = 300
+Phase_Quick_Step = 10
+FreqC_Quick_Gate = 0,2
+Phase_Step_Precise = 1
+FreqC_Precise_Gate = 1
+
+[Test03_Measurments_Grid]
+HV_Grid_FS = 100
+HV_Grid_TS = 2
+HV_Grid_Start = 50
+HV_Grid_Stop = 80
+HV_Grid_Initial_Step = 1
+HV_Grid_FreqC_Gate_Time = 0,1
+HV_Grid_FreqC_Num_Of_Meas = 10
+HV_Grid_Pulse_Count_min = 30
+HV_Grid_Pulse_Count_max = 1000
+HV_Grid_Minimum_delta_V = 0,6
+HV_Grid_HV_bias_Number_Of_Intervals = 10
+
+[Test04_Measurments_DCR]
+DCR_FS = 100
+DCR_TS = 2
+DCR_FreqC_Gate_Time = 0,1
+DCR_FreqC_Num_Of_Meas = 10
+
+[Test05_Measurments_QE]
+QE_FreqC_Gate_Time = 0,1
+QE_FreqC_Num_Of_Meas = 10
+QE_ATT3 = 60
+TR_Start_Meas_index = 5
+TR_Scope_Recall_File = spd-jitter-setup--00003.lss
+TR_Histo_Size = 10000
+
+[Test06_Measurments_AP]
+AP_FS = 10
+AP_TS = 2
+AP_ATT3 = 60
+AP_FreqC_Gate_Time = 0,1
+AP_FreqC_Num_Of_Meas = 10
+AP_Scope_Recall_File = spd-ap-setup-100khz--00000.lss
+AP_Histo_Size = 10000
+
+[Test07_Measurments_TR_bifurcation]
+TR_bif_FS = 156250
+TR_bif_TS = 2
+TR_bif_Att3 = 60
+TR_bif_P_set_meas = 5,6E-6
+TR_bif_P_set_phase_tune = 500E-9
+TR_bif_FreqC_Gate_Time = 0,1
+TR_bif_FreqC_Num_Of_Meas = 10
+TR_bif_Scope_Recall_File = spd-jitter-setup--00003.lss
+TR_bif_Histo_Size = 100000
+TR_bif_Start_Meas_index = 5
