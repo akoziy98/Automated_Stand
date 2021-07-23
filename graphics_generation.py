@@ -64,12 +64,12 @@ class graphics_generation(object):
         #self.qe_sat_list = [20, 25, 30, 35]
 
         print('qe_max = ', qe_max)
-        if 18 <= qe_max < 50:
+        if 18 <= qe_max < 70:
             self.qe_sat_list = [10, 15, 20, 25]
         elif 10 <= qe_max < 18:
         #    self.qe_sat_list = [round((i + 1) * qe_max / 4, 1) for i in range(4)]
             self.qe_sat_list = [5, 7, 10, 15]
-        elif qe_max > 50 :
+        elif qe_max > 70 :
             self.qe_sat_list = [20, 25, 30, 35]
 
         self.colors = ['b', 'g', 'r', 'magenta', 'k', 'cyan']
