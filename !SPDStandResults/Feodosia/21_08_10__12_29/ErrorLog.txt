@@ -1,0 +1,39 @@
+[21.08.10_13:03:53]
+error code: -44
+SPD.Wait For SPD Ready.vi<ERR>
+Timeout acquired while Waiting SPD Ready.
+
+
+<b>Complete call chain:</b>
+     SPD.Wait For SPD Ready.vi
+     SPD.Set HV_Bias and Wait For Ready.vi
+     SPD.HV_bias Range.vi
+     SPD.HV_Bias Grid Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
+[21.08.10_14:01:06]
+error code: -44
+SPD.Wait For SPD Ready.vi<ERR>
+Timeout acquired while Waiting SPD Ready.
+
+
+<b>Complete call chain:</b>
+     SPD.Wait For SPD Ready.vi
+     SPD.Set HV_Bias and Wait For Ready.vi
+     SPD.HV_bias Range.vi
+     SPD.HV_Bias Grid Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
+[21.08.10_14:40:13]
+error code: -44
+SPD.Wait For SPD Ready.vi<ERR>
+Timeout acquired while Waiting SPD Ready.
+
+
+<b>Complete call chain:</b>
+     SPD.Wait For SPD Ready.vi
+     SPD.Set HV_Bias and Wait For Ready.vi
+     SPD.HV_bias Range.vi
+     SPD.HV_Bias Grid Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
