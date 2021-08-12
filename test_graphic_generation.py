@@ -93,12 +93,22 @@ params['dir_name'] = '!SPDStandResults//BRONISLAV//21_07_20__21_03'
 params['type'] = 'gated'
 '''
 
+'''
 #Params for Rodion
 params = {}
 params['name'] = 'Rodion'
 params['date'] = '21.07.2021'
 params['dir_name'] = '!SPDStandResults//Rodion//21_07_21__18_14'
 params['type'] = 'gated'
+'''
+
+params = {}
+params['name'] = 'Feodosia'
+params['date'] = '10.08.2021'
+params['dir_name'] = '!SPDStandResults//Feodosia//21_08_10__12_29'
+params['type'] = 'freerun'
+
+
 
 grph = graphics_generation(params)
 grph.generate_pdf()

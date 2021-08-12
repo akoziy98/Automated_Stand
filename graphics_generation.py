@@ -698,10 +698,14 @@ class graphics_generation(object):
                 if self.SPD.type == 'gated' and type(self.gate_voltage) != int:
                     plt.title(r'TR for T = ' + str(el) + ' C. Vb = ' + str(round(self.vbias_trhist_10[el], 2)) + r' V. $V_g$ = ' + str(self.optimum_qe_10_vg_v) + ' V' )
                     filename = os.path.join(self.params['dir_name'], self.fold, self.criterion) + '//TR_T' + str(el) + '_VG' + '.png'
-                else:
+                elif self.SPD.type == 'gated':
                     plt.title(r'TR for T = ' + str(el) + ' C. Vb = ' + str(round(self.vbias_trhist_10[el], 2)) + r' V.')
                     filename = os.path.join(self.params['dir_name'], self.fold, self.criterion) + '//TR_T' + str(
                         el) + '_CD' + '.png'
+                elif self.SPD.type == 'freerun':
+                    plt.title(r'TR for T = ' + str(el) + ' C. Vb = ' + str(round(self.vbias_trhist_10[el], 2)) + r' V.')
+                    filename = os.path.join(self.params['dir_name'], self.fold, self.criterion) + '//TR_T' + str(
+                        el) + '.png'
                 #plt.legend(fontsize=14, loc='upper right')
                 plt.grid(True)
                 plt.savefig(filename, bbox_inches='tight', transparent=True, dpi=100)
@@ -723,10 +727,14 @@ class graphics_generation(object):
                 if self.SPD.type == 'gated' and type(self.gate_voltage) != int:
                     plt.title(r'TR for T = ' + str(el) + ' C. Vb = ' + str(round(self.vbias_trhist[el], 2)) + r' V. $V_g$ = ' + str(self.optimum_snr_vg_v) + ' V' )
                     filename = os.path.join(self.params['dir_name'], self.fold, self.criterion) + '//TR_T' + str(el) + '_CD' + '.png'
-                else:
+                elif self.SPD.type == 'gated':
                     plt.title(r'TR for T = ' + str(el) + ' C. Vb = ' + str(round(self.vbias_trhist[el], 2)) + r' V.')
                     filename = os.path.join(self.params['dir_name'], self.fold, self.criterion) + '//TR_T' + str(
                         el) + '_VG' + '.png'
+                elif self.SPD.type == 'freerun':
+                    plt.title(r'TR for T = ' + str(el) + ' C. Vb = ' + str(round(self.vbias_trhist[el], 2)) + r' V.')
+                    filename = os.path.join(self.params['dir_name'], self.fold, self.criterion) + '//TR_T' + str(
+                        el) + '.png'
                 #plt.legend(fontsize=14, loc='upper right')
                 plt.grid(True)
                 plt.savefig(filename, bbox_inches='tight', transparent=True, dpi=100)
