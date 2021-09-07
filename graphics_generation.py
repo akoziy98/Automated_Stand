@@ -267,7 +267,7 @@ class graphics_generation(object):
             ax1.plot(self.SPD.grid[j], self.SPD.snr[j], color=self.colors[0], marker='o', label='AP')
 
             ax1.set_xlabel(r'$V_b$')
-            ax1.set_ylabel('AP, \%')
+            ax1.set_ylabel('SNR')
             plt.title(r'SNR dependence on $V_b$. T = ' + str(self.temp_list[j]) + ' C')
             ax1.legend(fontsize=14, loc='upper right')
             plt.grid(True)
