@@ -19,3 +19,7 @@ Raw data for different SPD models placed at the !SPDStandResults folder. All our
 
 ## Updates
 Repository updates while adding a new SPD measurements or while adding a new features in code. So, it's really actual repository.
+
+## Description
+
+For better understanding the automated stand work process and postprocessing procedure, you can read description file description.pdf
