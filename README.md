@@ -23,3 +23,7 @@ Repository updates while adding a new SPD measurements or while adding a new fea
 ## Description
 
 For better understanding the automated stand work process and postprocessing procedure, you can read description file description.pdf
+
+## Application work example
+
+![](https://github.com/akoziy98/Automated_Stand/blob/main/example_work.gif)
