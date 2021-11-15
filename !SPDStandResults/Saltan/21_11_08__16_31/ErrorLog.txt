@@ -1,0 +1,75 @@
+[21.11.08_16:43:39]
+error code: -41
+SPD.HV_Bias Build Grid.vi<ERR>
+HV_bias max and HV_bias min difference less then minimum delta.
+
+
+<b>Complete call chain:</b>
+     SPD.HV_Bias Build Grid.vi
+     SPD.HV_bias Range.vi
+     SPD.HV_Bias Grid Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
+[21.11.08_16:47:41]
+error code: -44
+SPD.Wait For SPD Ready.vi<ERR>
+Timeout acquired while Waiting SPD Ready.
+
+
+<b>Complete call chain:</b>
+     SPD.Wait For SPD Ready.vi
+     SPD.Set Stb Code and Wait For Ready.vi
+     SPD.QE&TR Meas Const T.vi
+     SPD.QE&TR Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
+[21.11.08_17:20:53]
+error code: -41
+SPD.HV_Bias Build Grid.vi<ERR>
+HV_bias max and HV_bias min difference less then minimum delta.
+
+
+<b>Complete call chain:</b>
+     SPD.HV_Bias Build Grid.vi
+     SPD.HV_bias Range.vi
+     SPD.HV_Bias Grid Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
+[21.11.08_17:24:56]
+error code: -44
+SPD.Wait For SPD Ready.vi<ERR>
+Timeout acquired while Waiting SPD Ready.
+
+
+<b>Complete call chain:</b>
+     SPD.Wait For SPD Ready.vi
+     SPD.Set Stb Code and Wait For Ready.vi
+     SPD.QE&TR Meas Const T.vi
+     SPD.QE&TR Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
+[21.11.08_17:58:16]
+error code: -41
+SPD.HV_Bias Build Grid.vi<ERR>
+HV_bias max and HV_bias min difference less then minimum delta.
+
+
+<b>Complete call chain:</b>
+     SPD.HV_Bias Build Grid.vi
+     SPD.HV_bias Range.vi
+     SPD.HV_Bias Grid Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi
+[21.11.08_18:02:20]
+error code: -44
+SPD.Wait For SPD Ready.vi<ERR>
+Timeout acquired while Waiting SPD Ready.
+
+
+<b>Complete call chain:</b>
+     SPD.Wait For SPD Ready.vi
+     SPD.Set Stb Code and Wait For Ready.vi
+     SPD.QE&TR Meas Const T.vi
+     SPD.QE&TR Meas.vi
+     SPD.Measurments.vi
+     SPD Test Launcher.vi

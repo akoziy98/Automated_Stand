@@ -1,8 +1,8 @@
-import numpy as np
-import matplotlib.pyplot as plt
-plt.rc('text', usetex=True)
-plt.rc('font', family='serif')
-plt.rcParams.update({'font.size': 22})
+# import numpy as np
+# import matplotlib.pyplot as plt
+# plt.rc('text', usetex=True)
+# plt.rc('font', family='serif')
+# plt.rcParams.update({'font.size': 22})
 
 def Ap_analyze(filename, type = 'gated'):
 

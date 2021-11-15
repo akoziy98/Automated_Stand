@@ -108,6 +108,7 @@ class graphics_generation(object):
                 vb_sat.append([])
                 for j in range(len(self.SPD.stb_list[i])):
                     qe_list = np.array(self.SPD.qe[i][j,:])
+                    qe_list[qe_list < 0] = 0
                     ind_vb2 = np.argmin(abs(qe_list * (qe_list >= qe_sat) - qe_sat))
                     ind_vb1 = np.argmin(abs(qe_list * (qe_list < qe_sat) - qe_sat))
                     qe1 = qe_list[ind_vb1]
@@ -120,7 +121,12 @@ class graphics_generation(object):
 
                         ap1 = self.SPD.ap_list[i][j,ind_vb1]
                         ap2 = self.SPD.ap_list[i][j,ind_vb2]
-                        ap_sat[i].append((ap2 - ap1) / (qe2 - qe1) * (qe_sat - qe1) + ap1)
+                        ap_new_val = (ap2 - ap1) / (qe2 - qe1) * (qe_sat - qe1) + ap1
+                        if ap_new_val > 50:
+                            ap_new_val = 50
+                        if ap_new_val < 0:
+                            ap_new_val = 0
+                        ap_sat[i].append(ap_new_val)
 
                         vb1 = self.SPD.grid[i][j,ind_vb1]
                         vb2 = self.SPD.grid[i][j,ind_vb2]
