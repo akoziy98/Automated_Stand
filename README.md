@@ -12,6 +12,8 @@ https://arxiv.org/abs/2103.07363
 
 https://link.springer.com/article/10.1134/S1063739721010078
 
+https://iopscience.iop.org/article/10.1070/QEL17566/meta
+
 ## Navigation
 You can run GUI5.py or start_SPD.bat to open the app with 3-D and 2-D representation of measured SPD parameters. The button "create report" will create the datashit (report) for choosed SPD. 
 
