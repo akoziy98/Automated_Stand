@@ -63,7 +63,7 @@ class graphics_generation(object):
         #Settings for gun detector
         #self.qe_sat_list = [20, 25, 30, 35]
 
-        print('qe_max = ', qe_max)
+        #print('qe_max = ', qe_max)
         if 18 <= qe_max < 70:
             self.qe_sat_list = [10, 15, 20, 25]
         elif 10 <= qe_max < 18:
