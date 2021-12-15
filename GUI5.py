@@ -18,6 +18,7 @@ from PyQt5.QtWidgets import QLabel as Label, QGridLayout, QDesktopWidget, QSlide
 import spd_analyze
 import design5
 from graphics_generation import graphics_generation
+import prepare_opt_tables
 
 #from threedsurfacegraphwindow import ThreeDSurfaceGraphWindow
 
@@ -28,6 +29,7 @@ class ProgramGUI(QtWidgets.QMainWindow, design5.Ui_MainWindow):
         self.setupUi(self)
         # GUI window specific values
         self.title = 'SPD view programm'
+        self.setWindowTitle(self.title)
         self.left = 100
         self.top = 100
         self.width = 1600
@@ -74,6 +76,12 @@ class ProgramGUI(QtWidgets.QMainWindow, design5.Ui_MainWindow):
     def create_report(self):
         report = graphics_generation(self.params)
         report.generate_pdf()
+        try:
+            opt_table = prepare_opt_tables.prepare_table(self.params)
+            opt_table.create_opt_table()
+        except:
+            pass
+
 
     def center(self):
         """centers the window on the screen"""
