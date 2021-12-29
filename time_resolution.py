@@ -8,3 +8,4 @@ def time_resolution(filename):
             cnt = np.array([int(el) for el in line])
 
     return cnt
+    
