@@ -1,5 +1,6 @@
 import spd_analyze
 from graphics_generation import graphics_generation
+import generate_pdf
 import os
 #import generate_pdf
 
@@ -110,6 +111,7 @@ params['dir_name'] = '!SPDStandResults//Feodosia//21_08_10__12_29'
 params['type'] = 'freerun'
 '''
 
+
 params = {}
 params['name'] = 'IVANUSHKA'
 params['date'] = '10.11.2021'
@@ -117,7 +119,15 @@ params['dir_name'] = '!SPDStandResults//IVANUSHKA//21_11_10__15_27'
 params['type'] = 'gated'
 
 
-grph = graphics_generation(params)
-grph.generate_pdf()
+# params = {}
+# params['name'] = 'Alyonushka'
+# params['date'] = '02.12.2021'
+# params['dir_name'] = '!SPDStandResults//Alyonushka//21_12_02__13_47'
+# params['type'] = 'butterfly'
 
 
+#grph = graphics_generation(params)
+#grph.generate_pdf()
+
+pdf = generate_pdf.PdfDocument(params)
+pdf.generate_pdf()

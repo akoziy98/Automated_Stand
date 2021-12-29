@@ -2,51 +2,192 @@ import numpy as np
 import os
 from matplotlib import cm
 import pandas as pd
-from matplotlib.ticker import LinearLocator
 from scipy.optimize import curve_fit
+import warnings
+warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
+from abc import ABC, abstractmethod
+import shutil
 import matplotlib.pyplot as plt
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 plt.rcParams.update({'font.size': 22})
+
 import afterpulse as aft
 from time_resolution import time_resolution
 import module_pde
 
-import warnings
-warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
+DEFAULT_GATED_CHECK = "Grid_Stb_Code.csv"
+DEFAULT_BATTERFLY_CHECK = "Grid_DT.csv"
+DEFAULT_TEMP_NAME = 'Grid_Temperature.csv'
+DEFAULT_GRID_DT = "Grid_DT.csv"
+DEFAULT_GRID_INSENS = "Grid_Insens.csv"
+DEFAULT_DEAD_TIME_FOLDER = "DT"
+DEFAULT_DEAD_TIME_NAME = "DT.csv"
 
-class SPD(object):
+DEFAULT_DCR_SIGMA_NAME = "DCRSigma.csv"
+DEFAULT_DCR_SIGMA_BUTTERFLY_NAME = "DCR_Sigma.csv"
+DEFAULT_PDE_SIGMA_NAME = "QESigma.csv"
+DEFAULT_PDE_SIGMA_BUTTERFLY_NAME = "QE_Sigma.csv"
+
+class SPD():
     def __init__(self, dir_name):
-        #Dowload temperature files
         self.dir_name = dir_name
-        #self.type = 'gated'
-        temp_name = 'Grid_Temperature.csv'
-        temp_list = []
-        with open(os.path.join(dir_name, temp_name)) as fn:
-            for line in fn:
-                line = line.strip().split(';')
-                for el in line:
-                    temp_list.append(float(el))
-        self.temp_list = temp_list
 
-        #Download grid for gate:
-        #And derive the SPD type
-        self.type = 'freerun'
-        self.stb_name = 'Grid_Stb_Code.csv'
+        self.is_freerun = True
+        self.is_gated = False
+        self.is_batterfly = False
+
         for fn in os.listdir(dir_name):
-            if fn == self.stb_name:
-                self.type = 'gated'
+            if fn == DEFAULT_GATED_CHECK:
+                self.is_freerun = False
+                self.is_gated = True
+            if fn == DEFAULT_BATTERFLY_CHECK:
+                self.is_batterfly = True
 
-        if self.type == 'freerun':
-            self.load_freerun()
-        elif self.type == 'gated':
-            self.load_gated()
+        if self.is_batterfly:
+            if self.is_gated:
+                self.spd = SPDButterfly(dir_name, "gated")
+            elif self.is_freerun:
+                self.spd = SPDButterfly(dir_name, "freerun")
+        elif self.is_gated:
+            self.spd = SPDGated(dir_name)
+        elif self.is_freerun:
+            self.spd = SPDFreerun(dir_name)
+
+    def get_spd(self):
+        return self.spd
+
+    def get_type(self):
+        return self.is_batterfly, self.is_gated, self.is_freerun
+
+
+def read_single_row_tables(filename):
+    array = []
+    with open(filename) as fn:
+        for line in fn:
+            line = line.strip().split(';')
+            for el in line:
+                array.append(float(el))
+
+            break
+
+    return array
+
+
+class SPDCommon(ABC):
+    def __init__(self, dir_name):
+        self.dir_name = dir_name
+        temp_filename = os.path.join(dir_name, DEFAULT_TEMP_NAME)
+        self.temp_list = read_single_row_tables(temp_filename)
 
     def func_exp(self, x, a, b):
         return a * np.exp(b * x)
 
-    def load_freerun(self):
+    @abstractmethod
+    def load_spd(self):
+        pass
+
+    @abstractmethod
+    def slice_return(self):
+        pass
+
+    @abstractmethod
+    def timeres_return(self):
+        pass
+
+
+class SPDButterfly(SPDCommon):
+    def __init__(self, dir_name, type):
+        super().__init__(dir_name)
+        self.type = "butterfly"
+        self.type_of_spd = type
+        #copy files to DT folder
+        self.copy_required_files()
+        self.load_spd()
+
+    def copy_required_files(self):
+        root_path = os.getcwd()
+        main_data_folder_path = os.path.join(root_path, self.dir_name)
+        temp_main_folder_filename = os.path.join(main_data_folder_path, DEFAULT_TEMP_NAME)
+        if self.type_of_spd == "gated":
+            gates_main_folder_filename = os.path.join(main_data_folder_path, DEFAULT_GATED_CHECK)
+
+        for file_name in os.listdir(self.dir_name):
+            if file_name.startswith('DT_'):
+                path = os.path.join(main_data_folder_path, file_name, DEFAULT_TEMP_NAME)
+                shutil.copy(temp_main_folder_filename, path)
+                if self.type_of_spd == "gated":
+                    path = os.path.join(main_data_folder_path, file_name, DEFAULT_GATED_CHECK)
+                    shutil.copy(gates_main_folder_filename, path)
+
+
+    def load_spd(self):
+        self.spd_dict = {}
+        self.path_dict = {}
+
+        grid_insens_filename = os.path.join(self.dir_name, DEFAULT_GRID_INSENS)
+        grid_dt_filename = os.path.join(self.dir_name, DEFAULT_GRID_DT)
+        dead_time_filename = os.path.join(self.dir_name, DEFAULT_DEAD_TIME_FOLDER, DEFAULT_DEAD_TIME_NAME)
+
+        self.grid_insens = read_single_row_tables(grid_insens_filename)
+        self.grid_dt = read_single_row_tables(grid_dt_filename)
+        self.grid_dt = [round(el) for el in self.grid_dt]
+        self.dead_time_list = read_single_row_tables(dead_time_filename)
+        self.dead_time_list = 1e6 * np.array(self.dead_time_list)
+
+        print(self.grid_dt)
+
+        for ind, dead_time in enumerate(self.dead_time_list):
+            pass
+
+        for file_name in os.listdir(self.dir_name):
+            #if file_name.startswith('DT_'):
+            dt_code = file_name.lower().replace("dt_0x", "")
+            try:
+                dt_code = int(dt_code, 16)
+            except:
+                dt_code = None
+
+            if dt_code is not None:
+                ind_of_dt_code = self.grid_dt.index(dt_code)
+                dead_time = self.dead_time_list[ind_of_dt_code]
+                path = os.path.join(self.dir_name, file_name)
+                print(f"load butterfly path {path}")
+                self.path_dict[dead_time] = file_name
+
+                if self.type_of_spd == "gated":
+                    self.spd_dict[dead_time] = SPDGated(path)
+                if self.type_of_spd == "freerun":
+                    self.spd_dict[dead_time] = SPDFreerun(path)
+
+        self.spd_deadtimes = self.spd_dict.keys()
+
+    def slice_return(self, plot_index=0, tempind=0, ind=0, spd_dead_time = 0):
+        spd = self.get_specific_spd(spd_dead_time)
+        if spd is not None:
+            return spd.slice_return(plot_index, tempind, ind)
+
+    def timeres_return(self, tempind=0, gateind=0, Vb=0, spd_dead_time = 0):
+        spd = self.get_specific_spd(spd_dead_time)
+        if spd is not None:
+            return spd.timeres_return(tempind, gateind, Vb)
+
+    def get_specific_spd(self, spd_dead_time = 0):
+        spd = self.spd_dict.get(spd_dead_time)
+        if spd is None:
+            print("there is no such spd dead time in butterfly spd")
+            return None
+        else:
+            return spd
+
+class SPDFreerun(SPDCommon):
+    def __init__(self, dir_name):
+        super().__init__(dir_name)
+        self.type = "freerun"
+        self.load_spd()
+
+    def load_spd(self):
         n = len(self.temp_list)
         temp_fold = ['T_' + str(el) for el in self.temp_list]
 
@@ -116,13 +257,6 @@ class SPD(object):
             dt_dict[i] = dt_dict_hlp
             hv_dict[i] = hv_dict_hlp
 
-            '''
-            print(timeres_dict)
-            print(ap_dict)
-            print(dt_dict)
-            print(hv_dict)
-            '''
-
         for i in range(n):
             vbias_small = hv_dict[i][0]
             AP_small = ap_dict[i][0]
@@ -147,10 +281,17 @@ class SPD(object):
                         if dcr[i][k] == 0:
                             dcr[i][k] = 30
 
-            with open(os.path.join(self.dir_name, temp_fold[i], file_sigma_dcr)) as fn:
-                for line in fn:
-                    line = line.strip().split(';')
-                    sigma_dcr[i] = [float(line[k]) for k in range(len(line))]
+            try:
+                with open(os.path.join(self.dir_name, temp_fold[i], file_sigma_dcr)) as fn:
+                    for line in fn:
+                        line = line.strip().split(';')
+                        sigma_dcr[i] = [float(line[k]) for k in range(len(line))]
+            except:
+                file_sigma_dcr = DEFAULT_DCR_SIGMA_BUTTERFLY_NAME
+                with open(os.path.join(self.dir_name, temp_fold[i], file_sigma_dcr)) as fn:
+                    for line in fn:
+                        line = line.strip().split(';')
+                        sigma_dcr[i] = [float(line[k]) for k in range(len(line))]
 
             with open(os.path.join(self.dir_name, temp_fold[i], file_R)) as fn:
                 for line in fn:
@@ -178,10 +319,46 @@ class SPD(object):
         self.timeres_dict = timeres_dict
         self.hv_timeres_dict = hv_timeres_dict
         self.snr = self.qe / self.dcr
-        #print(self.timeres_dict)
-        #print(self.dt_list)
 
-    def load_gated(self):
+    def slice_return(self, plot_index = 0, tempind = 0, ind = 0):
+        if plot_index == 0:
+            ret = 1 * self.dcr[tempind, :]
+        elif plot_index == 1:
+            ret = 1 * self.qe[tempind, :]
+        elif plot_index == 2:
+            ret = 1 * self.qe[tempind, :] / self.dcr[tempind, :]
+        elif plot_index == 3:
+            ret = 1 * self.ap_list[tempind, :]
+        elif plot_index == 4:
+            ret = 1 * self.dt_list[tempind, :]
+        n = len(ret)
+
+        return  self.grid[tempind, :], ret
+
+    def timeres_return(self, tempind = 0, gateind = 0, Vb = 0):
+        gate = 0
+        exitcode = 0
+        if self.timeres_dict[tempind].get(gate) != None:
+            tr_hist = self.timeres_dict[tempind][gate][Vb]
+        else:
+            exitcode = 1
+
+        if exitcode == 0:
+            return tr_hist
+        elif exitcode == 1:
+            print('There is not such TR histogram!')
+            return 0
+
+
+class SPDGated(SPDCommon):
+    def __init__(self, dir_name):
+        super().__init__(dir_name)
+        stb_list_filename = os.path.join(self.dir_name, DEFAULT_GATED_CHECK)
+        self.stb_list = read_single_row_tables(stb_list_filename)
+        self.type = "gated"
+        self.load_spd()
+
+    def load_spd(self):
         n = len(self.temp_list)
 
         try:
@@ -190,13 +367,6 @@ class SPD(object):
             self.gate_voltage = 0
             print('there is no gate voltage tables')
         temp_fold = ['T_' + str(el) for el in self.temp_list]
-        stb_list = []
-        with open(os.path.join(self.dir_name, self.stb_name)) as fn:
-            for line in fn:
-                line = line.strip().split(';')
-                for el in line:
-                    stb_list.append(float(el))
-        N = len(stb_list)
 
         # Download the afterpulse csv
         timeres_dict = [[] for i in range(n)]
@@ -304,17 +474,17 @@ class SPD(object):
             #print(self.temp_list[i])
             for j in range(n_apgates[i]):
                 try:
-                    vbias_small = hv_dict[i][stb_list[j]]
-                    AP_small = ap_dict[i][stb_list[j]]
+                    vbias_small = hv_dict[i][self.stb_list[j]]
+                    AP_small = ap_dict[i][self.stb_list[j]]
                     popt, pcov = curve_fit(self.func_exp, vbias_small, AP_small, method='lm', maxfev=1800, p0=[1, 1])
                     req_hvlist = np.array(grid[i][j][:])
                     req_hvlist = req_hvlist - req_hvlist[0]
                     #print(req_hvlist)
                     ap_list[i].append(self.func_exp(req_hvlist, *popt))
-                    DT_aver = np.mean(dt_dict[i][stb_list[j]])
+                    DT_aver = np.mean(dt_dict[i][self.stb_list[j]])
                     dt_list[i].append([DT_aver for i in range(len(req_hvlist))])
                 except:
-                    print('There is no required AP histogram for T = ' + str(self.temp_list[i]) + ' and gate = ' + str(hex(int(stb_list[j]))))
+                    print('There is no required AP histogram for T = ' + str(self.temp_list[i]) + ' and gate = ' + str(hex(int(self.stb_list[j]))))
                     n_apgates[i] = j
                     del grid[i][j]
 
@@ -336,14 +506,23 @@ class SPD(object):
                         ind += 1
 
             #print(dcr)
-
-            with open(os.path.join(self.dir_name, temp_fold[i], file_sigma_dcr)) as fn:
-                ind = 0
-                for line in fn:
-                    line = line.strip().split(';')
-                    if line[0] != 'NaN' and ind < n_apgates[i]:
-                        sigma_dcr[i].append([float(line[k]) for k in range(len(line))])
-                        ind += 1
+            try:
+                with open(os.path.join(self.dir_name, temp_fold[i], file_sigma_dcr)) as fn:
+                    ind = 0
+                    for line in fn:
+                        line = line.strip().split(';')
+                        if line[0] != 'NaN' and ind < n_apgates[i]:
+                            sigma_dcr[i].append([float(line[k]) for k in range(len(line))])
+                            ind += 1
+            except:
+                file_sigma_dcr = DEFAULT_DCR_SIGMA_BUTTERFLY_NAME
+                with open(os.path.join(self.dir_name, temp_fold[i], file_sigma_dcr)) as fn:
+                    ind = 0
+                    for line in fn:
+                        line = line.strip().split(';')
+                        if line[0] != 'NaN' and ind < n_apgates[i]:
+                            sigma_dcr[i].append([float(line[k]) for k in range(len(line))])
+                            ind += 1
 
             #print(sigma_dcr)
 
@@ -363,7 +542,7 @@ class SPD(object):
         mesh_strobe = []
         for i in range(n):
             NN = len(dcr[0][0][:])
-            mesh_strobe.append([stb_list[:n_apgates[i]] for j in range(NN)])
+            mesh_strobe.append([self.stb_list[:n_apgates[i]] for j in range(NN)])
             mesh_strobe[i] = np.array(mesh_strobe[i])
             mesh_strobe[i] = mesh_strobe[i].transpose()
         #print(mesh_strobe)
@@ -375,7 +554,7 @@ class SPD(object):
         self.qe = []
         self.sigma_dcr = []
         self.grid = []
-        self.stb_list = []
+        self.stb_list_new = []
         self.ap_list = []
         self.snr = []
         self.n_apgates = n_apgates
@@ -387,30 +566,17 @@ class SPD(object):
             self.qe.append(100 * np.array(QE[i]))
             self.sigma_dcr.append(np.array(sigma_dcr[i]))
             self.grid.append(np.array(grid[i]))
-            self.stb_list.append(np.array(stb_list[:n_apgates[i]]))
+            self.stb_list_new.append(np.array(self.stb_list[:n_apgates[i]]))
             self.ap_list.append(100 * np.array(ap_list[i]))
             self.snr.append(self.qe[i] / self.dcr[i])
         #Save to the class:
 
-        '''
-        self.dcr = dcr
-        self.R = R
-        self.qe = 100 * qe
-        self.sigma_dcr = sigma_dcr
-        self.grid = grid
-        self.stb_list = stb_list
-        self.ap_list = 100 * ap_list
-        '''
+        self.stb_list = self.stb_list_new
 
         self.timeres_dict = timeres_dict
         self.hv_timeres_dict = hv_timeres_dict
         self.timeres_dict_bif = timeres_dict_bif
         self.hv_timeres_dict_bif = hv_timeres_dict_bif
-        #self.snr = self.qe / self.dcr
-
-        #print(self.gate_voltage.code.iloc[5])
-        #print(self.stb_list[5])
-        #print(self.gate_voltage.code.iloc[5] == self.stb_list[5])
 
     def plot_section(self, choosed_T, choosed_graph):
         fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
@@ -442,50 +608,29 @@ class SPD(object):
 
         # fig.colorbar(surf, shrink=0.5, aspect=5)
         plt.show()
+
     def slice_return(self, plot_index = 0, tempind = 0, ind = 0):
-        if self.type == 'gated':
-            if plot_index == 0:
-                ret = 1 * self.dcr[tempind][ind]
-            elif plot_index == 1:
-                ret = 1 * self.qe[tempind][ind]
-            elif plot_index == 2:
-                ret = 1 * np.array(self.qe[tempind][ind]) / np.array(self.dcr[tempind][ind])
-            elif plot_index == 3:
-                ret = 1 * self.ap_list[tempind][ind]
-            elif plot_index == 4:
-                ret = 1 * self.dt_list[tempind][ind]
-            n = len(ret)
-            return [self.stb_list[tempind][ind] for i in range(n)], 1 * self.grid[tempind][ind], ret
-        elif self.type == 'freerun':
-            if plot_index == 0:
-                ret = 1 * self.dcr[tempind, :]
-            elif plot_index == 1:
-                ret = 1 * self.qe[tempind, :]
-            elif plot_index == 2:
-                ret = 1 * self.qe[tempind, :] / self.dcr[tempind, :]
-            elif plot_index == 3:
-                ret = 1 * self.ap_list[tempind, :]
-            elif plot_index == 4:
-                ret = 1 * self.dt_list[tempind, :]
-            n = len(ret)
-            return  self.grid[tempind, :], ret
+        if plot_index == 0:
+            ret = 1 * self.dcr[tempind][ind]
+        elif plot_index == 1:
+            ret = 1 * self.qe[tempind][ind]
+        elif plot_index == 2:
+            ret = 1 * np.array(self.qe[tempind][ind]) / np.array(self.dcr[tempind][ind])
+        elif plot_index == 3:
+            ret = 1 * self.ap_list[tempind][ind]
+        elif plot_index == 4:
+            ret = 1 * self.dt_list[tempind][ind]
+        n = len(ret)
+
+        return [self.stb_list[tempind][ind] for i in range(n)], 1 * self.grid[tempind][ind], ret
 
     def timeres_return(self, tempind = 0, gateind = 0, Vb = 0):
-        #hv = round(self.grid[tempind, gateind, hvind], 4)
-        if self.type == 'gated':
-            gate = self.stb_list[tempind][gateind]
-            exitcode = 0
-            if self.timeres_dict[tempind].get(gate) != None:
-                tr_hist = self.timeres_dict[tempind][gate][Vb]
-            else:
-                exitcode = 1
-        elif self.type == 'freerun':
-            gate = 0
-            exitcode = 0
-            if self.timeres_dict[tempind].get(gate) != None:
-                tr_hist = self.timeres_dict[tempind][gate][Vb]
-            else:
-                exitcode = 1
+        gate = self.stb_list[tempind][gateind]
+        exitcode = 0
+        if self.timeres_dict[tempind].get(gate) != None:
+            tr_hist = self.timeres_dict[tempind][gate][Vb]
+        else:
+            exitcode = 1
 
         if exitcode == 0:
             return tr_hist

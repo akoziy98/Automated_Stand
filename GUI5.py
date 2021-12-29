@@ -17,10 +17,14 @@ from PyQt5.QtWidgets import QLabel as Label, QGridLayout, QDesktopWidget, QSlide
 
 import spd_analyze
 import design5
-from graphics_generation import graphics_generation
+import generate_pdf
 import prepare_opt_tables
 
-#from threedsurfacegraphwindow import ThreeDSurfaceGraphWindow
+DEFAULT_GATED_NAME = "gated"
+DEFAULT_FREERUN_NAME = "freerun"
+DEFAULT_BUTTERFLY_NAME = "butterfly"
+
+
 
 class ProgramGUI(QtWidgets.QMainWindow, design5.Ui_MainWindow):
 
@@ -69,13 +73,16 @@ class ProgramGUI(QtWidgets.QMainWindow, design5.Ui_MainWindow):
         self.combobox_date.activated.connect(self.download_spd)
         self.combobox_temp.activated.connect(self.shift_slider2_newplot)
         self.combobox_plotnumber.activated.connect(self.shift_slider2_newplot)
+        self.combobox_deadtime.activated.connect(self.choose_deadtime_setting)
         self.slider1.valueChanged.connect(self.shift_slider2_newplot)
         self.slider2.valueChanged.connect(self.shift_slider2)
         self.report_button.clicked.connect(self.create_report)
 
+
     def create_report(self):
-        report = graphics_generation(self.params)
+        report = generate_pdf.PdfDocument(self.params)
         report.generate_pdf()
+
         try:
             opt_table = prepare_opt_tables.prepare_table(self.params)
             opt_table.create_opt_table()
@@ -131,11 +138,37 @@ class ProgramGUI(QtWidgets.QMainWindow, design5.Ui_MainWindow):
             del self.SPD
             print('Old SPD is deleted!')
             self.combobox_temp.clear()
+            self.combobox_deadtime.clear()
         except:
-            print('There is first loaded SPD!')
+            print('SPD is loaded!')
 
         self.SPD = spd_analyze.SPD(dir_name)
+        self.SPD = self.SPD.get_spd()
+        self.params["type"] = self.SPD.type
+
         #print(self.SPD.temp_list)
+        if self.SPD.type == DEFAULT_GATED_NAME or self.SPD.type == DEFAULT_FREERUN_NAME:
+            self.SPD_butterfly = None
+        elif self.SPD.type == DEFAULT_BUTTERFLY_NAME:
+            self.SPD_butterfly = self.SPD
+            deadtime_key = list(self.SPD.spd_dict.keys())[0]
+            self.SPD = self.SPD_butterfly.spd_dict[deadtime_key]
+            for ind, el in enumerate(self.SPD_butterfly.spd_deadtimes):
+                self.combobox_deadtime.addItem("DT = " + str(el))
+
+        self.set_start_setup_after_loading()
+
+    def choose_deadtime_setting(self):
+        deadtime_ind = self.combobox_deadtime.currentIndex()
+        list_of_keys = list(self.SPD_butterfly.spd_dict.keys())
+        cur_key = list_of_keys[deadtime_ind]
+        self.SPD = self.SPD_butterfly.spd_dict[cur_key]
+        self.combobox_temp.clear()
+
+        self.set_start_setup_after_loading()
+        self.shift_slider2_newplot()
+
+    def set_start_setup_after_loading(self):
         self.ntemps = len(self.SPD.temp_list)
         for i in range(len(self.SPD.temp_list)):
             self.combobox_temp.addItem('T = ' + str(self.SPD.temp_list[i]))
